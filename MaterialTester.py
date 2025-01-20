@@ -24,12 +24,12 @@ class MaterialTester:
     iOffset is the index of the array to be written to within the samples array. Set iOffset to 0 when sampling at the
     low range of stimuplex current and to 2 when sampling at the high range of stimuplex current.
     """
-    def sampleUc(self, iOffset):
+    def sampleUc(self, lowRange):
         ser = serial.Serial(self.serialPort, self.baudrate)
 
         # Clearing any existing data for the relevant dataset
-        self.samples[iOffset] = []
-        self.samples[1 + iOffset] = []
+        self.samples[self.indexer[lowRange]] = []
+        self.samples[1 + self.indexer[lowRange]] = []
 
         # Looping variables
         serRead = ""
@@ -48,8 +48,8 @@ class MaterialTester:
             if (ser.in_waiting > 0):
                 serRead = ser.readline().decode("utf-8").strip()
                 elapsedTimeNs = time.time_ns() - startTimeNs
-                self.samples[0 + iOffset].append(elapsedTimeNs)
-                self.samples[1 + iOffset].append(int(serRead))
+                self.samples[self.indexer[lowRange]].append(elapsedTimeNs)
+                self.samples[1 + self.indexer[lowRange]].append(int(serRead))
 
         # Send signal to stop streaming data across
         ser.write(signal)
@@ -60,14 +60,14 @@ class MaterialTester:
     plotData plots one of the datasets using matplotlib and saves the figure.
     iOffset is the starting index of the dataset to be plotted. The figure is saved to fpath.
     """
-    def plotData(self, iOffset, fpath, title, xAxisLabel, yAxisLabel):
+    def plotData(self, lowRange, fpath, title, xAxisLabel, yAxisLabel):
         fig = plt.figure()
         ax = fig.add_subplot(111)
 
         ax.set_title(title)
         ax.set_xlabel(xAxisLabel)
         ax.set_ylabel(yAxisLabel)
-        ax.plot(self.samples[iOffset], self.samples[1 + iOffset], "b-")
+        ax.plot(self.samples[self.indexer[lowRange]], self.samples[1 + self.indexer[lowRange]], "b-")
 
         fig.savefig(fpath)
         fig.show()

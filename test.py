@@ -6,20 +6,20 @@ def sampleAndPlot():
     print("Press enter when the device has been set up and is running to begin sampling.")
     input()
     print("Sampling...")
-    tester.sampleUc(0)
+    tester.sampleUc(True)
     print("Done.")
 
-    tester.plotData(0, "figures\\" + matName + "Low.png", "OSIM " + matName + " low range (" + str(tester.stimRanges[0]) + " mA) response", "Time (ns)", "A0 sample")
+    tester.plotData(True, "figures\\" + matName + "Low.png", "OSIM " + matName + " low range (" + str(tester.stimRanges[0]) + " mA) response", "Time (ns)", "A0 sample")
 
     print("Please set your HNS12 Stimuplex device's current to the upper limit of muscle response (" + str(
         tester.stimRanges[1]) + " mA).")
     print("Press enter when the device has been set up and is running to begin sampling.")
     input()
     print("Sampling...")
-    tester.sampleUc(2)
+    tester.sampleUc(False)
     print("Done.")
 
-    tester.plotData(2, "figures\\" + matName + "High.png", "OSIM " + matName + " high range (" + str(tester.stimRanges[1]) + " mA) response", "Time (ns)", "A0 sample")
+    tester.plotData(False, "figures\\" + matName + "High.png", "OSIM " + matName + " high range (" + str(tester.stimRanges[1]) + " mA) response", "Time (ns)", "A0 sample")
 
 def setStimLims():
     print("Please enter the lower limit of stimuplex current in mA:")
