@@ -36,13 +36,18 @@ def saveData():
     tester.saveData(fpath)
     print("Data saved to " + fpath)
 
+def setSampleTime():
+    print("Please enter the sample time in seconds:")
+    t = input()
+    tester.sampleTimeNs = float(t) * 1e9
+
 print("Hi, welcome to the Optocoupler-Stimuplex Interface Material Test and Calibration Framework (OSIMTCF).")
 print("This program will sample data from the optocoupler-stimuplex-material sensing loop, and provide plots/analysis of collected datasets.")
 print("Please provide the name of the material to be tested: ")
 matName = input()
 tester = MaterialTester.MaterialTester(matName)
 
-menuOptions = ["Sample and plot", "Data analysis", "Set stimuplex limits", "Save data", "Exit"]
+menuOptions = ["Sample and plot", "Data analysis", "Set stimuplex limits", "Save data", "Set sampling time", "Exit"]
 while True:
     print("Enter one of the following options:")
     for i in range(0, len(menuOptions)):
@@ -63,4 +68,5 @@ while True:
         setStimLims()
     elif menuSelection == 4:
         saveData()
-
+    elif menuSelection == 5:
+        setSampleTime()

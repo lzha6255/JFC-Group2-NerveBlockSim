@@ -11,6 +11,9 @@ class MaterialTester:
         # datasets arranged as follows: [[low range timestamps], [low range samples], [high range timestamps], [high
         # range samples]]
         self.samples = [[], [], [], []]
+        self.indexer = {True : 0, False : 2}
+        # Collection of samples that are determined to be during stimuplex active state
+        self.activeSamples = [[], []]
         self.sampleTimeNs = sampleTimeNs
         self.serialPort = port
         self.baudrate = baudrate
@@ -73,3 +76,10 @@ class MaterialTester:
         with open(fpath, "w") as csvfile:
             writer = csv.writer(csvfile)
             writer.writerows(self.samples)
+
+    """
+    This function aims to isolate any data samples that are taken when the stimuplex is actively driving current
+    through the sensing loop.
+    """
+    def isolateActivePulseSamples(self, ):
+        pass
