@@ -29,7 +29,8 @@ def setStimLims():
     tester.stimRanges = [low, hi]
 
 def dataAnalysis():
-    pass
+    tester.isolateActivePulseSamples(True)
+    tester.plotActiveSamples(True, matName + "ActiveSamplePlot.png", matName + " active samples low", "Sample Number", "A0 sample")
 
 def saveData():
     fpath = "datasets\\" + matName + ".csv"

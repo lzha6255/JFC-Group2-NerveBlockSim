@@ -70,6 +70,21 @@ class MaterialTester:
         fig.savefig(fpath)
         fig.show()
 
+    def plotActiveSamples(self, lowRange, fpath, title, xAxisLabel, yAxisLabel):
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+
+        ax.set_title(title)
+        ax.set_xlabel(xAxisLabel)
+        ax.set_ylabel(yAxisLabel)
+
+        i = int(self.indexer[lowRange] / 2)
+        xData = range(len(self.activeSamples[i]))
+        ax.plot(xData, self.activeSamples[i], "b-")
+
+        fig.savefig(fpath)
+        fig.show()
+
     def saveData(self, fpath):
         with open(fpath, "w") as csvfile:
             writer = csv.writer(csvfile)
@@ -80,4 +95,9 @@ class MaterialTester:
     through the sensing loop.
     """
     def isolateActivePulseSamples(self, lowRange):
-        pass
+        optoData = np.array(self.samples[self.indexer[lowRange]+1])
+        avgSample = np.average(optoData)
+        i = int(self.indexer[lowRange] / 2)
+        for sample in optoData:
+            if sample > avgSample:
+                self.activeSamples[i].append(sample)
