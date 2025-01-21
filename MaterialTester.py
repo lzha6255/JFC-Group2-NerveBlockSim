@@ -25,14 +25,12 @@ class MaterialTester:
     low range of stimuplex current and to 2 when sampling at the high range of stimuplex current.
     """
     def sampleUc(self, lowRange):
+        i = self.indexer[lowRange]
         ser = serial.Serial(self.serialPort, self.baudrate)
 
         # Clearing any existing data for the relevant dataset
-        self.samples[self.indexer[lowRange]] = []
-        self.samples[1 + self.indexer[lowRange]] = []
-
-        # Looping variables
-        serRead = ""
+        self.samples[i] = []
+        self.samples[i+1] = []
 
         # Time variables
         elapsedTimeNs = 0
@@ -48,8 +46,8 @@ class MaterialTester:
             if (ser.in_waiting > 0):
                 serRead = ser.readline().decode("utf-8").strip()
                 elapsedTimeNs = time.time_ns() - startTimeNs
-                self.samples[self.indexer[lowRange]].append(elapsedTimeNs)
-                self.samples[1 + self.indexer[lowRange]].append(int(serRead))
+                self.samples[i].append(elapsedTimeNs)
+                self.samples[i+1].append(int(serRead))
 
         # Send signal to stop streaming data across
         ser.write(signal)
@@ -81,5 +79,5 @@ class MaterialTester:
     This function aims to isolate any data samples that are taken when the stimuplex is actively driving current
     through the sensing loop.
     """
-    def isolateActivePulseSamples(self, ):
+    def isolateActivePulseSamples(self, lowRange):
         pass
