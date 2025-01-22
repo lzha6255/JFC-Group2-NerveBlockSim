@@ -111,15 +111,39 @@ class MaterialTester:
     grouping them by their timestamps, until sample time * stimuplex frequency groups have been identified.
     """
     def groupMaxSamples(self, lowRange):
-        # The samples within a group are guaranteed to be within this time frame
+        # The samples within a group are guaranteed to be within this time frame inclusive
         groupTimeFrameNs = 1e3
 
         # Tupulize the dataset into a list of (sample, timestamp) pairs
         optoData = []
         for i in range(0, len(self.samples[self.indexer[lowRange]])):
-            optoData.append((self.samples[self.indexer[lowRange]+1][i], self.samples[self.indexer[lowRange]][i]))
-        print(optoData)
+            optoData.append((self.samples[self.indexer[lowRange]+1][i] * -1, self.samples[self.indexer[lowRange]][i]))
+        # Heapify
+        heapq.heapify(optoData)
 
         totalGroups = int(self.stimFreq * self.sampleTimeNs / 1e9)
 
         groups = []
+
+        while len(groups) < totalGroups:
+            dataPoint = heapq.heappop(optoData)
+            # Reverse the order of the tuple and multiply analog reading by -1
+            dataPoint = (dataPoint[1], dataPoint[0] * -1)
+            # Step through the groups and try to allocate the data point to one
+            allocated = False
+            for group in groups:
+                if dataPoint[0] <= group[0][0] + groupTimeFrameNs and dataPoint[0] >= group[-1][0] - groupTimeFrameNs:
+                    heapq.heappush(group, dataPoint)
+                    allocated = True
+                    break
+            # Create a new group if not allocated
+            if not allocated:
+                group = [dataPoint]
+                heapq.heapify(group)
+                groups.append(group)
+
+        self.activeSamples = [[], []]
+        i = int(self.indexer[lowRange] / 2)
+        for group in groups:
+            for dataPoint in group:
+                self.activeSamples[i].append(dataPoint[1])
