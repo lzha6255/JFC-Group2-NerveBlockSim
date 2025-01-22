@@ -1,4 +1,4 @@
-# define SIM
+// # define SIM
 # define OUTPUT_ONLY
 
 #ifdef SIM
