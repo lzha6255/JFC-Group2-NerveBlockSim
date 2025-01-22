@@ -1,5 +1,4 @@
-# define SIM
-# define OUTPUT_ONLY
+#define SIM
 
 #ifdef SIM
 int stimuplexPulsePin = 5;
@@ -9,9 +8,6 @@ unsigned long lastPulseSwitch = 0;
 unsigned long timeSinceSwitch = 0;
 unsigned long onTimeUs = 1000;
 unsigned long offTimeUs = 499000;
-
-int optoInputPin = A1;
-int optoInputV = 0;
 #endif
 
 int optoOutputV = 0;
@@ -23,7 +19,6 @@ void setup() {
   // put your setup code here, to run once:
   #ifdef SIM
   pinMode(stimuplexPulsePin, OUTPUT);
-  pinMode(optoInputPin, INPUT);
   lastPulseSwitch = micros();
   #endif
   pinMode(optoOutputPin, INPUT);
@@ -49,19 +44,9 @@ void loop() {
       lastPulseSwitch = micros();
       stimuplexPulseOn = true;
     }
+    #endif
 
-    // Send the reading for optocoupler input
-    #ifndef OUTPUT_ONLY
-    optoInputV = analogRead(optoInputPin);
-    Serial.println(optoInputV);
-    #endif
-    #endif
-    #ifndef SIM
-    #ifndef OUTPUT_ONLY
-    // Dummy value as the optocoupler input is decoupled from the uC and can not be read meaningfully
-    Serial.println(0);
-    #endif
-    #endif
+    // Message PC with the optocoupler output
     optoOutputV = analogRead(optoOutputPin);
     Serial.println(optoOutputV);
 
