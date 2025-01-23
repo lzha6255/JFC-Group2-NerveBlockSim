@@ -82,15 +82,19 @@ class MaterialTester:
 
         i = int(self.indexer[lowRange] / 2)
         xData = range(len(self.activeSamples[i]))
-        ax.plot(xData, self.activeSamples[i], "b-")
+        ax.plot(xData, self.activeSamples[i], "bo")
 
         fig.savefig(fpath)
         fig.show()
 
-    def saveData(self, fpath):
-        with open(fpath, "w") as csvfile:
+    def saveData(self, fname):
+        with open(fname + "_raw.csv", "w") as csvfile:
             writer = csv.writer(csvfile)
             writer.writerows(self.samples)
+
+        with open(fname + "_peaks.csv", "w") as csvfile:
+            writer = csv.writer(csvfile)
+            writer.writerows(self.activeSamples)
 
     """
     This function aims to isolate any data samples that are taken when the stimuplex is actively driving current

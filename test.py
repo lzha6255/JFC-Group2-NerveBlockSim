@@ -34,9 +34,9 @@ def dataAnalysis():
     tester.plotActiveSamples(True, "figures\\" + matName + "ActiveSamplePlot.png", matName + " active samples low", "Sample Number", "A0 sample")
 
 def saveData():
-    fpath = "datasets\\" + matName + ".csv"
-    tester.saveData(fpath)
-    print("Data saved to " + fpath)
+    fname = "datasets\\" + matName
+    tester.saveData(fname)
+    print("Data saved.")
 
 def setSampleTime():
     print("Please enter the sample time in seconds:")

@@ -1,4 +1,4 @@
-#define SIM
+//#define SIM
 
 #ifdef SIM
 int stimuplexPulsePin = 5;
