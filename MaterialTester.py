@@ -15,6 +15,8 @@ class MaterialTester:
         self.indexer = {True : 0, False : 2}
         # Collection of samples that are determined to be during stimuplex active state
         self.activeSamples = [[], []]
+        # Indices of activeSamples which delineate groups of data points from the same pulse
+        self.pulseIndices = [[], []]
         self.sampleTimeNs = sampleTimeNs
         self.serialPort = port
         self.baudrate = baudrate
@@ -96,6 +98,16 @@ class MaterialTester:
             writer = csv.writer(csvfile)
             writer.writerows(self.activeSamples)
 
+        with open(fname + "_peaks_metadata.txt", "w") as file:
+            for pulseIndices in self.pulseIndices:
+                file.write(str(len(pulseIndices)) + " pulses identified.\n")
+                lastPulseIndex = 0
+                pulseNumber = 1
+                for pulseIndex in pulseIndices:
+                    file.write(str(pulseIndex - lastPulseIndex) + " datapoints attributed to pulse " + str(pulseNumber) + "\n")
+                    lastPulseIndex = pulseIndex
+                    pulseNumber = pulseNumber + 1
+
     """
     This function aims to isolate any data samples that are taken when the stimuplex is actively driving current
     through the sensing loop.
@@ -105,6 +117,7 @@ class MaterialTester:
         optoData = np.array(self.samples[self.indexer[lowRange]+1])
         avgSample = np.average(optoData)
         i = int(self.indexer[lowRange] / 2)
+        self.activeSamples[i] = []
         for sample in optoData:
             if sample > avgSample:
                 self.activeSamples[i].append(sample)
@@ -114,7 +127,7 @@ class MaterialTester:
     This one takes a more sophisticated approach of successively extracting maximums over the entire dataset and
     grouping them by their timestamps, until sample time * stimuplex frequency groups have been identified.
     """
-    def groupMaxSamples(self, lowRange):
+    def groupMaxSamples(self, lowRange, fname = "pulse"):
         # The samples within a group are guaranteed to be within this time frame inclusive
         groupTimeFrameNs = 1e3
 
@@ -146,8 +159,11 @@ class MaterialTester:
                 heapq.heapify(group)
                 groups.append(group)
 
-        self.activeSamples = [[], []]
         i = int(self.indexer[lowRange] / 2)
+        self.activeSamples[i] = []
+        self.pulseIndices[i] = []
         for group in groups:
             for dataPoint in group:
                 self.activeSamples[i].append(dataPoint[1])
+            self.pulseIndices[i].append(len(self.activeSamples[i]))
+
