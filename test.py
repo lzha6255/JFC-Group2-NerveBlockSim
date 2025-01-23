@@ -31,7 +31,7 @@ def setStimLims():
 def dataAnalysis():
     # tester.aboveAveragePulseSamples(True)
     tester.groupMaxSamples(True)
-    tester.plotActiveSamples(True, matName + "ActiveSamplePlot.png", matName + " active samples low", "Sample Number", "A0 sample")
+    tester.plotActiveSamples(True, "figures\\" + matName + "ActiveSamplePlot.png", matName + " active samples low", "Sample Number", "A0 sample")
 
 def saveData():
     fpath = "datasets\\" + matName + ".csv"
@@ -43,13 +43,18 @@ def setSampleTime():
     t = input()
     tester.sampleTimeNs = float(t) * 1e9
 
+def setStimFreq():
+    print("Please enter the stimuplex pulse frequency in Hz:")
+    f = input()
+    tester.stimFreq = int(f)
+
 print("Hi, welcome to the Optocoupler-Stimuplex Interface Material Test and Calibration Framework (OSIMTCF).")
 print("This program will sample data from the optocoupler-stimuplex-material sensing loop, and provide plots/analysis of collected datasets.")
 print("Please provide the name of the material to be tested: ")
 matName = input()
 tester = MaterialTester.MaterialTester(matName)
 
-menuOptions = ["Sample and plot", "Data analysis", "Set stimuplex limits", "Save data", "Set sampling time", "Exit"]
+menuOptions = ["Sample and plot", "Data analysis", "Set stimuplex limits", "Save data", "Set sampling time", "Set stimuplex frequency", "Exit"]
 while True:
     print("Enter one of the following options:")
     for i in range(0, len(menuOptions)):
@@ -72,3 +77,5 @@ while True:
         saveData()
     elif menuSelection == 5:
         setSampleTime()
+    elif menuSelection == 6:
+        setStimFreq()
