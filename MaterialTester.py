@@ -85,6 +85,9 @@ class MaterialTester:
         i = int(self.indexer[lowRange] / 2)
         xData = range(len(self.activeSamples[i]))
         ax.plot(xData, self.activeSamples[i], "bo")
+        # Add vertical lines to delineate separate pulses
+        for pulseIndex in self.pulseIndices[i]:
+            ax.axvline(pulseIndex - 0.5, color = "r")
 
         fig.savefig(fpath)
         fig.show()
