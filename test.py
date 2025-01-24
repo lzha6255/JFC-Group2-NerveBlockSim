@@ -1,4 +1,5 @@
 import MaterialTester
+import ResistanceTester
 
 def sampleAndPlot():
     print("Please set your HNS12 Stimuplex device's current to the lower limit of muscle response (" + str(
@@ -48,13 +49,29 @@ def setStimFreq():
     f = input()
     tester.stimFreq = int(f)
 
+def testResistance():
+    print("Please ensure that the circuit and microcontroller are set up to test the material's resistance.")
+    print("Enter stability limit in seconds when ready:")
+    stabilityLimit = int(input())
+    rTester.sample(True, stabilityLimit)
+    rTester.ADCRead2Resistance(1e3)
+    rTester.plotResistance("figures\\" + matName + " resistance test")
+
 print("Hi, welcome to the Optocoupler-Stimuplex Interface Material Test and Calibration Framework (OSIMTCF).")
 print("This program will sample data from the optocoupler-stimuplex-material sensing loop, and provide plots/analysis of collected datasets.")
 print("Please provide the name of the material to be tested: ")
 matName = input()
 tester = MaterialTester.MaterialTester(matName)
+rTester = ResistanceTester.ResistanceTester()
 
-menuOptions = ["Sample and plot", "Data analysis", "Set stimuplex limits", "Save data", "Set sampling time", "Set stimuplex frequency", "Exit"]
+menuOptions = ["Sample and plot",
+               "Data analysis",
+               "Set stimuplex limits",
+               "Save data",
+               "Set sampling time",
+               "Set stimuplex frequency",
+               "Conduct resistance test",
+               "Exit"]
 while True:
     print("Enter one of the following options:")
     for i in range(0, len(menuOptions)):
@@ -79,3 +96,5 @@ while True:
         setSampleTime()
     elif menuSelection == 6:
         setStimFreq()
+    elif menuSelection == 7:
+        testResistance()
