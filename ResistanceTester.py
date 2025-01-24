@@ -21,6 +21,11 @@ class ResistanceTester:
         sampling = True
         startTime = time.time()
 
+        # Start signal
+        signal = bytearray()
+        signal.append(0x01)
+        ser.write(signal)
+
         while sampling:
             if ser.in_waiting > 0:
                 serRead = ser.readline().decode("utf-8").strip()
@@ -43,6 +48,8 @@ class ResistanceTester:
                 else:
                     if self.samples[0][-1] > timeLimit:
                         sampling = False
+
+        ser.write(signal)
 
         ser.close()
 
