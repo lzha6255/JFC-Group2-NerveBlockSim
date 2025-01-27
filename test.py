@@ -54,7 +54,9 @@ def testResistance():
     print("Enter stability limit in seconds when ready:")
     stabilityLimit = int(input())
     rTester.sample(True, stabilityLimit)
-    rTester.ADCRead2Resistance(1e3)
+    print("Enter the resistance in series with the test material in ohms:")
+    r = float(input())
+    rTester.ADCRead2Resistance(r)
     rTester.plotResistance("figures\\" + matName + " resistance test")
 
 print("Hi, welcome to the Optocoupler-Stimuplex Interface Material Test and Calibration Framework (OSIMTCF).")

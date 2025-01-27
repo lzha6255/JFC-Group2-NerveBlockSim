@@ -21,6 +21,8 @@ class MaterialTester:
         self.serialPort = port
         self.baudrate = baudrate
         self.stimFreq = stimFreq
+        # Dataset of corresponding currents (i), distances (d), and output voltages (v)
+        self.idvData = [[], [], []]
 
     """
     The sampleUc function sends a signal to the Arduino to begin streaming analogRead() values across serial.
@@ -130,7 +132,7 @@ class MaterialTester:
     This one takes a more sophisticated approach of successively extracting maximums over the entire dataset and
     grouping them by their timestamps, until sample time * stimuplex frequency groups have been identified.
     """
-    def groupMaxSamples(self, lowRange, fname = "pulse"):
+    def groupMaxSamples(self, lowRange):
         # The samples within a group are guaranteed to be within this time frame inclusive
         groupTimeFrameNs = 1e3
 
@@ -169,4 +171,14 @@ class MaterialTester:
             for dataPoint in group:
                 self.activeSamples[i].append(dataPoint[1])
             self.pulseIndices[i].append(len(self.activeSamples[i]))
+
+    """
+    Creates a new (i, d, v) data point.
+    Assumes that the user has the set up with the correct current (i) and distance from nerve center (d).
+    Runs data collection and analysis software to determine the corresponding v value, then adds the data point to the
+    dataset.
+    """
+    def newidvDataPoint(self, i, d):
+        self.sampleUc(True)
+        self.groupMaxSamples(True)
 
