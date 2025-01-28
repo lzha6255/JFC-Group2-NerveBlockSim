@@ -172,6 +172,11 @@ class MaterialTester:
                 self.activeSamples[i].append(dataPoint[1])
             self.pulseIndices[i].append(len(self.activeSamples[i]))
 
+    def averageMaxSamples(self, lowRange):
+        i = int(self.indexer[lowRange] / 2)
+        data = np.array(self.activeSamples[i])
+        return np.average(data)
+
     """
     Creates a new (i, d, v) data point.
     Assumes that the user has the set up with the correct current (i) and distance from nerve center (d).

@@ -32,7 +32,11 @@ def setStimLims():
 def dataAnalysis():
     # tester.aboveAveragePulseSamples(True)
     tester.groupMaxSamples(True)
-    tester.plotActiveSamples(True, "figures\\" + matName + "ActiveSamplePlot.png", matName + " active samples low", "Sample Number", "A0 sample")
+    tester.plotActiveSamples(True, "figures\\" + matName + "_low_range_pulses.png", matName + " pulse datapoints (low range)", "Sample Number", "A0 Sample")
+    tester.groupMaxSamples(False)
+    tester.plotActiveSamples(False, "figures\\" + matName + "_high_range_pulses.png", matName + " pulse datapoints (high range)", "Sample Number", "A0 Sample")
+    print("Average pulse sample value low range: " + str(tester.averageMaxSamples(True)))
+    print("Average pulse sample value high range: " + str(tester.averageMaxSamples(False)))
 
 def saveData():
     fname = "datasets\\" + matName
@@ -57,7 +61,7 @@ def testResistance():
     print("Enter the resistance in series with the test material in ohms:")
     r = float(input())
     rTester.ADCRead2Resistance(r)
-    rTester.plotResistance("figures\\" + matName + " resistance test")
+    rTester.plotResistance("figures\\" + matName + " resistance test", title=matName + " resistance test")
     print("Enter file name to save resistance testing data:")
     fname = input()
     rTester.saveData(fname)
