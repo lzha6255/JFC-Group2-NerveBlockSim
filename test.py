@@ -58,6 +58,9 @@ def testResistance():
     r = float(input())
     rTester.ADCRead2Resistance(r)
     rTester.plotResistance("figures\\" + matName + " resistance test")
+    print("Enter file name to save resistance testing data:")
+    fname = input()
+    rTester.saveData(fname)
 
 print("Hi, welcome to the Optocoupler-Stimuplex Interface Material Test and Calibration Framework (OSIMTCF).")
 print("This program will sample data from the optocoupler-stimuplex-material sensing loop, and provide plots/analysis of collected datasets.")

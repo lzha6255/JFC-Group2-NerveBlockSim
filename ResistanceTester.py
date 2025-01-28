@@ -1,6 +1,7 @@
 import serial
 import time
 import matplotlib.pyplot as plt
+import csv
 
 class ResistanceTester:
     def __init__(self, port="COM3", baudrate=9600, sampleFreq=2):
@@ -12,7 +13,7 @@ class ResistanceTester:
         self.resistanceData = []
         self.ADCBits = 10
 
-    def sample(self, stableCutOff=True, stabilityLimit=10, timeLimit=60):
+    def sample(self, stableCutOff=True, stabilityLimit=10, stabilityWindow = 1, timeLimit=60):
         # Clearing data
         self.samples = [[], []]
 
@@ -41,7 +42,7 @@ class ResistanceTester:
                     sampling = False
                     value = self.samples[1][-1]
                     for i in range(1, sampleLimit):
-                        if self.samples[1][-i] != value:
+                        if self.samples[1][-i] > value + stabilityWindow or self.samples[1][-i] < value - stabilityWindow:
                             sampling = True
                             print("Failed stability test at " + str(i))
                             break
@@ -79,3 +80,9 @@ class ResistanceTester:
 
         fig.savefig(fname + ".png")
         fig.show()
+
+    def saveData(self, fname):
+        with open("datasets\\" + fname + ".csv", "w") as csvfile:
+            writer = csv.writer(csvfile)
+            writer.writerows(self.samples)
+            writer.writerow(self.resistanceData)
