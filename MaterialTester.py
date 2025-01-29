@@ -15,6 +15,10 @@ class MaterialTester:
         self.indexer = {True : 0, False : 2}
         # Collection of samples that are determined to be during stimuplex active state
         self.activeSamples = [[], []]
+        # vLin = averaged out pulse analogRead() values used to calculate a linear motor response
+        self.vLin = np.zeros(2)
+        # linResponseParams = [m, b] where motor signal M = mv + b, v is the analogRead() value.
+        self.linResponseParams = np.zeros(2)
         # Indices of activeSamples which delineate groups of data points from the same pulse
         self.pulseIndices = [[], []]
         self.sampleTimeNs = sampleTimeNs
@@ -176,6 +180,24 @@ class MaterialTester:
         i = int(self.indexer[lowRange] / 2)
         data = np.array(self.activeSamples[i])
         return np.average(data)
+
+    """
+    Calculates the linear function to map the ADC samples to a motor signal such that low range produces no motor motion
+    and high range produces the maximum motor motion.
+    """
+    def getLinearMotorResponseFunc(self, neutralPos, maxPos, fname):
+        # Get the average pulse value at the extents of desired response
+        self.vLin[0] = self.averageMaxSamples(True)
+        self.vLin[1] = self.averageMaxSamples(False)
+        self.linResponseParams[0] = (maxPos - neutralPos) / (self.vLin[1] - self.vLin[0])
+        self.linResponseParams[1] = (neutralPos * self.vLin[1] - maxPos * self.vLin[0]) / (self.vLin[1] - self.vLin[0])
+        print("Linear response parameters")
+        print("m: " + str(self.linResponseParams[0]))
+        print("b: " + str(self.linResponseParams[1]))
+        with open(fname + ".txt", "w") as file:
+            file.write("\tLinear Motor Response\n")
+            file.write("Expected range of ADC samples: " + str(self.vLin[0]) + " - " + str(self.vLin[1]) + "\n")
+            file.write("M = " + str(self.linResponseParams[0]) + "v + " + str(self.linResponseParams[1]) + "\n")
 
     """
     Creates a new (i, d, v) data point.

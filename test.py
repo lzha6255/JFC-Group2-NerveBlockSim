@@ -37,6 +37,7 @@ def dataAnalysis():
     tester.plotActiveSamples(False, "figures\\" + matName + "_high_range_pulses.png", matName + " pulse datapoints (high range)", "Sample Number", "A0 Sample")
     print("Average pulse sample value low range: " + str(tester.averageMaxSamples(True)))
     print("Average pulse sample value high range: " + str(tester.averageMaxSamples(False)))
+    tester.getLinearMotorResponseFunc(16, 0, "parameters\\" + matName + "_lin_response_func")
 
 def saveData():
     fname = "datasets\\" + matName

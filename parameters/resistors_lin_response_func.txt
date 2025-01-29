@@ -1,0 +1,3 @@
+	Linear Motor Response
+Expected range of ADC samples: 22.016393442622952 - 930.0
+M = -0.017621463520320655v + 16.387961073898207
