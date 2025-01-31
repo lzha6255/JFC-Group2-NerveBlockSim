@@ -69,6 +69,25 @@ def testResistance():
     fname = input()
     rTester.saveData(fname)
 
+def findPlanarFunctions():
+    tester.idvData = []
+    print("Please set your HNS12 Stimuplex device's current to the lower limit of muscle response (" + str(tester.stimRanges[0]) + " mA).")
+    print("Please also position the anode (needle tip) to be as close to the cathode as possible without making direct contact.")
+    print("Press enter to begin sampling.")
+    input()
+    tester.newidvDataPoint(tester.stimRanges[0], 0)
+    print("Please set your HNS12 Stimuplex device's current to the upper limit of muscle response (" + str(tester.stimRanges[1]) + " mA).")
+    print("Please also position the anode (needle tip) to be as close to the cathode as possible without making direct contact.")
+    print("Press enter to begin sampling.")
+    input()
+    tester.newidvDataPoint(tester.stimRanges[1], 0)
+    print("Please set your HNS12 Stimuplex device's current to the lower limit of muscle response (" + str(tester.stimRanges[0]) + " mA).")
+    print("Please also position the anode (needle tip) to be roughly 1 cm away from the cathode.")
+    print("Press enter to begin sampling.")
+    input()
+    tester.newidvDataPoint(tester.stimRanges[0], 10)
+    tester.calcPlanarVFunc("parameters\\" + matName + "_V_function")
+
 print("Hi, welcome to the Optocoupler-Stimuplex Interface Material Test and Calibration Framework (OSIMTCF).")
 print("This program will sample data from the optocoupler-stimuplex-material sensing loop, and provide plots/analysis of collected datasets.")
 print("Please provide the name of the material to be tested: ")
@@ -83,6 +102,7 @@ menuOptions = ["Sample and plot",
                "Set sampling time",
                "Set stimuplex frequency",
                "Conduct resistance test",
+               "Find f(i, d) and motor signal function g(f)",
                "Exit"]
 while True:
     print("Enter one of the following options:")
@@ -110,3 +130,5 @@ while True:
         setStimFreq()
     elif menuSelection == 7:
         testResistance()
+    elif menuSelection == 8:
+        findPlanarFunctions()
