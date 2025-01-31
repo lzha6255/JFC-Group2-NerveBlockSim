@@ -26,7 +26,7 @@ class MaterialTester:
         self.baudrate = baudrate
         self.stimFreq = stimFreq
         # Dataset of corresponding currents (i), distances (d), and output voltages (v)
-        self.idvData = [[], [], []]
+        self.idvData = []
 
     """
     The sampleUc function sends a signal to the Arduino to begin streaming analogRead() values across serial.
@@ -208,4 +208,19 @@ class MaterialTester:
     def newidvDataPoint(self, i, d):
         self.sampleUc(True)
         self.groupMaxSamples(True)
+        self.idvData.append([i, d, self.averageMaxSamples(True)])
+
+    """
+    This function assumes that in self.idvData the first data point is at min current and min distance, the second is
+    at max current and min distance, and the third is at min current and max distance. These three data points are used
+    to span the plane over i and d.
+    """
+    def calcPlanarVFunc(self, fname):
+        a = (self.idvData[1][2] - self.idvData[0][2]) / (self.idvData[1][0] - self.idvData[0][0])
+        b = (self.idvData[2][2] - self.idvData[0][2]) / (self.idvData[2][1] - self.idvData[0][1])
+        c = self.idvData[0][2] - a * self.idvData[0][0] - b * self.idvData[0][1]
+
+        with open(fname + ".txt", "w") as file:
+            file.write("\tPlanar V function\n")
+            file.write("V = " + str(a) + "i + " + str(b) + "d + " + str(c) + "\n")
 
